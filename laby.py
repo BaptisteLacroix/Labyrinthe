@@ -179,17 +179,17 @@ def sortie_labyrinthe(cavenas: Canvas, graphe: Graphe) -> None:
     end = int(sqrt(len(graphe.dico_graphe))) - 1
     size = 800 / (case * 2 - 1)
     path = chemin(graphe, (0, 0), (end, end))
-    affichage_sortie_labytinthe_recu(cavenas, path, int(size))
+    affichage_sortie_labytinthe_recu(cavenas, path, size)
 
 
-def affichage_sortie_labytinthe_recu(cavenas: Canvas, path: List[Tuple[int, int]], size: int) -> None:
+def affichage_sortie_labytinthe_recu(cavenas: Canvas, path: List[Tuple[int, int]], size: float) -> None:
     if not path:
         return
     coord_x = path[0][1] * size
     coord_y = path[0][0] * size
     # print("path = ", path)
     cavenas.create_rectangle(coord_x, coord_y, coord_x + size, coord_y + size, fill='blue')
-    fen_princ.after(200, lambda: affichage_sortie_labytinthe_recu(cavenas, path[1:], size))
+    fen_princ.after(100, lambda: affichage_sortie_labytinthe_recu(cavenas, path[1:], size))
 
 
 # Main
