@@ -129,14 +129,21 @@ def dedale(L: int) -> Graphe:
     return generation_graphe(labyrinthe)
 
 
-def represente_laby(cavenas, G):
+def represente_laby(cavenas, graphe: Graphe):
     size = 800 / (case * 2 - 1)
-    liste_sommets = []
-    for i in G.dico_graphe:
-        liste_sommets.append(i)
-    for i in liste_sommets:
-        if G.liste_voisins(i):
-            cavenas.create_rectangle(i[1] * size, i[0] * size, i[1] * size + size, i[0] * size + size, fill='white')
+    liste_sommets = [i for i in graphe.dico_graphe]
+    affichage_sortie_labytinthe_white_recu(graphe, cavenas, liste_sommets, float(size))
+
+
+def affichage_sortie_labytinthe_white_recu(graphe: Graphe, cavenas: Canvas, liste_sommets: List[Tuple[int, int]],
+                                           size: float) -> None:
+    if not liste_sommets:
+        return
+    sommet_actuel = liste_sommets[0]
+    if graphe.liste_voisins(sommet_actuel):
+        cavenas.create_rectangle(sommet_actuel[1] * size, sommet_actuel[0] * size, sommet_actuel[1] * size + size,
+                                 sommet_actuel[0] * size + size, fill='white')
+    fen_princ.after(10, lambda: affichage_sortie_labytinthe_white_recu(graphe, cavenas, liste_sommets[1:], size))
 
 
 # Voisin
@@ -179,17 +186,17 @@ def sortie_labyrinthe(cavenas: Canvas, graphe: Graphe) -> None:
     end = int(sqrt(len(graphe.dico_graphe))) - 1
     size = 800 / (case * 2 - 1)
     path = chemin(graphe, (0, 0), (end, end))
-    affichage_sortie_labytinthe_recu(cavenas, path, size)
+    affichage_sortie_labytinthe_blue_recu(cavenas, path, float(size))
 
 
-def affichage_sortie_labytinthe_recu(cavenas: Canvas, path: List[Tuple[int, int]], size: float) -> None:
+def affichage_sortie_labytinthe_blue_recu(cavenas: Canvas, path: List[Tuple[int, int]], size: float) -> None:
     if not path:
         return
     coord_x = path[0][1] * size
     coord_y = path[0][0] * size
     # print("path = ", path)
     cavenas.create_rectangle(coord_x, coord_y, coord_x + size, coord_y + size, fill='blue')
-    fen_princ.after(100, lambda: affichage_sortie_labytinthe_recu(cavenas, path[1:], size))
+    fen_princ.after(100, lambda: affichage_sortie_labytinthe_blue_recu(cavenas, path[1:], size))
 
 
 # Main
