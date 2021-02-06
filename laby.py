@@ -1,8 +1,6 @@
-import time
 from random import choice
 from math import sqrt
 from tkinter import *
-
 
 # Class
 from typing import List, Tuple
@@ -32,17 +30,6 @@ class Pile:
 
     def __init__(self):
         self.valeurs = []
-
-    def __repr__(self):
-        """
-        représente la pile sous forme d'objets empilées
-        :return:
-        """
-        ch = ''
-        for x in self.valeurs:
-            ch = "|\t" + str(x) + "\t|" + "\n" + ch
-        ch = "\n" + ch
-        return ch
 
     def empiler(self, nombre):
         self.valeurs.append(nombre)
@@ -82,21 +69,6 @@ def dfs_alea2(G, sommet):
     return visite
 
 
-def parcours_dfs_iteratif(G, sommet):
-    sommets_visites = {sommet: None}
-    p = Pile()
-    p.empiler(sommet)
-    while not (p.est_vide()):
-        S = p.depiler()
-        v = [i for i in G.liste_voisins(S) if i not in sommets_visites]
-        if v:
-            for Sv in v:
-                if Sv not in sommets_visites:
-                    sommets_visites[Sv] = S
-                    p.empiler(Sv)
-    return sommets_visites
-
-
 # Génération Graphe
 
 def generation_graphe(M):
@@ -126,11 +98,12 @@ def dedale(L: int) -> Graphe:
             labyrinthe[2 * k][2 * liste] = 1
             labyrinthe[i + k][j + liste] = 1
     labyrinthe[-1][-1] = 1  # 1 à la sortie
+    print(sum([len(i) for i in labyrinthe]))
     return generation_graphe(labyrinthe)
 
 
 def represente_laby(cavenas, graphe: Graphe):
-    size = 800 / (case * 2 - 1)
+    size = 1000 / (case * 2 - 1)
     liste_sommets = [i for i in graphe.dico_graphe]
     affichage_sortie_labytinthe_white_recu(graphe, cavenas, liste_sommets, float(size))
 
@@ -143,7 +116,7 @@ def affichage_sortie_labytinthe_white_recu(graphe: Graphe, cavenas: Canvas, list
     if graphe.liste_voisins(sommet_actuel):
         cavenas.create_rectangle(sommet_actuel[1] * size, sommet_actuel[0] * size, sommet_actuel[1] * size + size,
                                  sommet_actuel[0] * size + size, fill='white')
-    fen_princ.after(10, lambda: affichage_sortie_labytinthe_white_recu(graphe, cavenas, liste_sommets[1:], size))
+    fen_princ.after(5, lambda: affichage_sortie_labytinthe_white_recu(graphe, cavenas, liste_sommets[1:], size))
 
 
 # Voisin
@@ -165,7 +138,8 @@ def voisins(M, couple: Tuple[int, int]) -> List[Tuple[int, int]]:
 
 # Chemin et arrivée
 
-def chemin(graphe: Graphe, sommet_depart: Tuple[int, int], sommet_arrive: Tuple[int, int]) -> None or List[Tuple[int, int]]:
+def chemin(graphe: Graphe, sommet_depart: Tuple[int, int], sommet_arrive: Tuple[int, int]) -> List[Tuple[int, int]] \
+                                                                                              or None:
     parents = dfs_alea2(graphe, sommet_depart)
     if sommet_arrive not in parents:
         print('Pas de chemin')
@@ -179,12 +153,21 @@ def chemin(graphe: Graphe, sommet_depart: Tuple[int, int], sommet_arrive: Tuple[
 
 
 def onkeypressed(event):
-    sortie_labyrinthe(monCanvas, G1)
+    if event.keysym == 'r':
+        sortie_labyrinthe(monCanvas, G1)
+    elif event.keysym == 'z':
+        keypressed_up(monCanvas)
+    elif event.keysym == 's':
+        keypressed_down(monCanvas)
+    elif event.keysym == 'q':
+        keypressed_left(monCanvas)
+    elif event.keysym == 'd':
+        keypressed_right(monCanvas)
 
 
 def sortie_labyrinthe(cavenas: Canvas, graphe: Graphe) -> None:
     end = int(sqrt(len(graphe.dico_graphe))) - 1
-    size = 800 / (case * 2 - 1)
+    size = 1000 / (case * 2 - 1)
     path = chemin(graphe, (0, 0), (end, end))
     affichage_sortie_labytinthe_blue_recu(cavenas, path, float(size))
 
@@ -205,12 +188,35 @@ case = int(input("Saisissez la taille de votre labyrinthe : "))
 G1 = dedale(case)
 
 fen_princ = Tk()  # création d'une fenetre
-fen_princ.geometry("900x900")  # taille de la fenetre : 900x900
+fen_princ.geometry("1000x1000")  # taille de la fenetre : 900x900
 
-monCanvas = Canvas(fen_princ, width=800, height=800, bg='black', border=1)  # widget canvas
+monCanvas = Canvas(fen_princ, width=1000, height=1000, bg='black', border=1)  # widget canvas
+
+
 # il permet de dessiner des formes diverses
 
+
+def keypressed_right(cavenas):
+    pass
+
+
+def keypressed_left(cavenas):
+    pass
+
+
+def keypressed_up(cavenas):
+    pass
+
+
+def keypressed_down(cavenas):
+    pass
+
+
 fen_princ.bind('<KeyPress-r>', onkeypressed)  # permet d'appeler onkeypressed lors l'appuie sur la touche <r>
+fen_princ.bind('<KeyPress-z>', onkeypressed)
+fen_princ.bind('<KeyPress-s>', onkeypressed)
+fen_princ.bind('<KeyPress-q>', onkeypressed)
+fen_princ.bind('<KeyPress-d>', onkeypressed)
 
 monCanvas.pack()  # place le widget dans la fenetre
 
